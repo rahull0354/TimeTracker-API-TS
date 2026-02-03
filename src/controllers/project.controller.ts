@@ -97,6 +97,7 @@ export const updateProjectDetails = async (req: Request, res: Response) => {
       success: true,
       project: updatedProject,
     });
+    return
   } catch (error) {
     console.error(error);
     res.status(500).json({
@@ -171,3 +172,48 @@ export const getParticularProjectDetails = async (
     return;
   }
 };
+
+export const changeStatusOfProject = async (req: Request, res: Response) => {
+    try {
+        const userId = (req as any).user.id
+        const {projectId} = req.params
+        const {status} = req.body
+
+        if(!status || status.trim() === "") {
+            res.status(400).json({
+                message: "please provide status of the project",
+                success: false
+            })
+            return 
+        }
+        
+        let project = await Project.findOne({_id: projectId, userId})
+        if(!project) {
+            res.status(404).json({
+                message: "Project not found!",
+                success: false
+            })
+            return
+        }
+
+        const updateStatus = await Project.findByIdAndUpdate(
+            projectId,
+            {status},
+            {new: true}
+        )
+
+        res.status(200).json({
+            message: `changed status for ${project.projectName} project`,
+            success: true,
+            project: updateStatus
+        })
+        return
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({
+            message: "Error changing status of project",
+            success: false
+        })
+        return
+    }
+}

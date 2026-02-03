@@ -1,4 +1,5 @@
 import {
+  changeStatusOfProject,
   createProject,
   deleteProject,
   getAllProjectOfParticularUser,
@@ -14,6 +15,11 @@ router.post("/create", authMiddleware, createProject);
 router.delete("/delete/:projectId", authMiddleware, deleteProject);
 router.put("/update/:projectId", authMiddleware, updateProjectDetails);
 router.get("/myProjects", authMiddleware, getAllProjectOfParticularUser);
-router.get("/projectDetails/:projectId", authMiddleware, getParticularProjectDetails);
+router.get(
+  "/projectDetails/:projectId",
+  authMiddleware,
+  getParticularProjectDetails,
+);
+router.put("/changeStatus/:projectId", authMiddleware, changeStatusOfProject);
 
 export default router;
