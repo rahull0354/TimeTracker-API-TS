@@ -1,9 +1,19 @@
-import { createProject } from '#controllers/project.controller.js';
-import { authMiddleware } from '#middlewares/auth.middleware.js';
-import express from 'express';
+import {
+  createProject,
+  deleteProject,
+  getAllProjectOfParticularUser,
+  getParticularProjectDetails,
+  updateProjectDetails,
+} from "#controllers/project.controller.js";
+import { authMiddleware } from "#middlewares/auth.middleware.js";
+import express from "express";
 
-const router = express.Router()
+const router = express.Router();
 
-router.post("/create", authMiddleware, createProject)
+router.post("/create", authMiddleware, createProject);
+router.delete("/delete/:projectId", authMiddleware, deleteProject);
+router.put("/update/:projectId", authMiddleware, updateProjectDetails);
+router.get("/myProjects", authMiddleware, getAllProjectOfParticularUser);
+router.get("/projectDetails/:projectId", authMiddleware, getParticularProjectDetails);
 
-export default router
+export default router;
