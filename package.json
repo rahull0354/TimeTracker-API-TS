@@ -19,11 +19,14 @@
   "license": "ISC",
   "type": "module",
   "dependencies": {
+    "@types/json2csv": "^5.0.7",
     "@types/jsonwebtoken": "^9.0.10",
+    "@types/xlsx": "^0.0.35",
     "bcryptjs": "^3.0.3",
     "express": "^5.2.1",
     "jsonwebtoken": "^9.0.3",
-    "mongoose": "^9.1.5"
+    "mongoose": "^9.1.5",
+    "xlsx": "^0.18.5"
   },
   "devDependencies": {
     "@eslint/js": "^9.39.2",
