@@ -22,6 +22,7 @@ export const startTimeEntry = async (req: Request, res: Response) => {
       _id: projectId,
       userId,
     });
+
     if (!projectCheck) {
       res.status(404).json({
         message: "Project not found !",
@@ -35,7 +36,7 @@ export const startTimeEntry = async (req: Request, res: Response) => {
       userId,
     }).sort({ createdAt: -1 });
 
-    if (timeEntry) {
+    if (timeEntry !== null) {
       if (timeEntry.status === "running" || timeEntry.status === "break") {
         res.status(400).json({
           message: `Timer is already in ${timeEntry.status} state`,
@@ -73,6 +74,15 @@ export const startTimeEntry = async (req: Request, res: Response) => {
         date: new Date(),
         status: "running",
       });
+
+      await timeEntry.save();
+
+      res.status(200).json({
+        message: `Time Entry started for ${projectCheck.projectName}`,
+        success: true,
+        timeEntry,
+      });
+      return;
     }
   } catch (error) {
     console.error(error);
