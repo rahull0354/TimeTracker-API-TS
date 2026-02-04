@@ -10,7 +10,7 @@ interface ITimeEntry extends Document {
   totalTime: number;
   status: string;
   sessions: Array<{
-    type: "work" | "break"
+    type: "work" | "break";
     startTime: Date;
     endTime: Date;
     duration: number;
@@ -56,9 +56,9 @@ const timeEntrySchema = new mongoose.Schema<ITimeEntry>(
     sessions: [
       {
         type: {
-            type: String,
-            enum: ["work", "break"],
-            default: "work"
+          type: String,
+          enum: ["work", "break"],
+          default: "work",
         },
         startTime: { type: Date },
         endTime: { type: Date },
