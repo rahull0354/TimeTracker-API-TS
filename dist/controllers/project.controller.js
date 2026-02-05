@@ -1,4 +1,4 @@
-import Project from "../../models/project.model.js";
+import Project from "../models/project.model.js";
 export const createProject = async (req, res) => {
     try {
         const { projectName, description, clientName, hourlyRate } = req.body;

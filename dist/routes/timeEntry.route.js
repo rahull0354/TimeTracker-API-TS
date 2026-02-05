@@ -1,5 +1,5 @@
-import { applyBreakToTimer, completeTimeEntry, resumeTimer, startTimeEntry, stopTimeEntry, } from "../../controllers/timeEntry.controller.js";
-import { authMiddleware } from "../../middlewares/auth.middleware.js";
+import { applyBreakToTimer, completeTimeEntry, resumeTimer, startTimeEntry, stopTimeEntry, } from "../controllers/timeEntry.controller.js";
+import { authMiddleware } from "../middlewares/auth.middleware.js";
 import express from "express";
 const router = express.Router();
 router.post("/startTimeEntry/:projectId", authMiddleware, startTimeEntry);

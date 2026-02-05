@@ -1,5 +1,5 @@
-import Project from "../../models/project.model.js";
-import TimeEntry from "../../models/timeEntry.model.js";
+import Project from "../models/project.model.js";
+import TimeEntry from "../models/timeEntry.model.js";
 // fetching all the projects of a user
 export const fetchAllProjects = async (userId) => {
     const projects = (await Project.find({ userId: userId })
