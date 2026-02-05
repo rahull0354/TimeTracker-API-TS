@@ -55,7 +55,12 @@ export const startTimeEntry = async (req: Request, res: Response) => {
           date: new Date(),
           status: "running",
         });
+      } else if (timeEntry.status === "stopped") {
+        timeEntry.description = description;
+        timeEntry.startTime = new Date();
+        timeEntry.status = "running";
       }
+
       await timeEntry.save();
 
       res.status(200).json({

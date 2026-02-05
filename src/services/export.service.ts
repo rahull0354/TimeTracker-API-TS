@@ -64,25 +64,56 @@ export const fetchTimeEntriesOfAProject = async (
 // fetch time entries within a specific time range
 export const fetchSpecificEntries = async (
   userId: string,
-  startDate: Date,
-  endDate: Date,
+  startDate: string,
+  endDate: string,
 ): Promise<any[]> => {
-  const timeEntry = (await TimeEntry.find({
+  // Normalize dates to include full day range
+  const start = new Date(startDate);
+  start.setHours(0, 0, 0, 0);
+
+  const end = new Date(endDate);
+  end.setHours(23, 59, 59, 999);
+
+  const timeEntries = (await TimeEntry.find({
     userId: userId as any,
     date: {
-      $gte: new Date(startDate),
-      $lte: new Date(endDate),
+      $gte: start,
+      $lte: end,
     },
   })
     .populate("projectId", "projectName")
     .lean()) as any[];
 
-  return timeEntry.map((entry) => ({
-    "Project Name": entry.projectId?.projectName,
-    Description: entry.description,
-    Date: new Date(entry.date).toLocaleString(),
-    "Start Time": new Date(entry.startTime).toLocaleTimeString(),
-  }));
+  const result: any[] = [];
+
+  for (const entry of timeEntries) {
+    if (entry.sessions && entry.sessions.length > 0) {
+      // add each session as a separate row
+      for (const session of entry.sessions) {
+        result.push({
+          "Project Name": entry.projectId?.projectName || "N/A",
+          Description: entry.description,
+          Session: session.type === "work" ? "Work Session" : "Break",
+          "Start Time": new Date(session.startTime).toLocaleString(),
+          "End Time": new Date(session.endTime).toLocaleString(),
+          "Duration (Minutes)": session.duration || 0,
+          Status: entry.status,
+        });
+      }
+    } else {
+      // Entry exits but no sesions yet
+      result.push({
+        "Project Name": entry.projectId?.projectName || "N/A",
+        Description: entry.description,
+        Session: "Work Session",
+        "Start Time": new Date(entry.startTime).toLocaleString(),
+        "End Time": "Running",
+        "Duration (Minutes)": entry.totalTime || 0,
+        Status: entry.status,
+      });
+    }
+  }
+  return result;
 };
 
 // generate summary report
