@@ -1,5 +1,5 @@
-import Project from "../../models/project.model.js";
-import TimeEntry from "../../models/timeEntry.model.js";
+import Project from "../models/project.model.js";
+import TimeEntry from "../models/timeEntry.model.js";
 export const startTimeEntry = async (req, res) => {
     try {
         const userId = req.user.id;
