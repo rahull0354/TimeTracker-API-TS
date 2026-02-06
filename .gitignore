@@ -8,7 +8,9 @@ pnpm-debug.log*
 lerna-debug.log*
 
 node_modules
+dist
 dist-ssr
+api
 *.local
 
 # Editor directories and files
@@ -24,3 +26,6 @@ dist-ssr
 
 .env
 exports/
+
+# Windows-specific junk files
+nul
