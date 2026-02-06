@@ -1,4 +1,3 @@
-import type { Request, Response } from "express";
 import app from "../dist/config/app.js";
 import DBConnect from "../dist/config/DBConnect.js";
 
@@ -13,7 +12,7 @@ const ensureDBConnection = async () => {
 };
 
 // Vercel serverless function handler
-export default async function handler(req: Request, res: Response): Promise<void> {
+export default async function handler(req, res) {
   await ensureDBConnection();
   app(req, res);
 }
