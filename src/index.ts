@@ -23,8 +23,7 @@ if (process.env.NODE_ENV !== "production") {
 }
 
 // Export for Vercel serverless deployment
-// This function signature is what Vercel looks for
-export default function handler(req: Request, res: Response): void {
+export default async function handler(req: Request, res: Response): Promise<void> {
   // The Express app is already set up with DB connection middleware
   // Just pass the request to the app
   app(req, res);

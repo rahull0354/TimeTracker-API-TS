@@ -1,18 +1,3 @@
-import app from "../dist/config/app.js";
-import DBConnect from "../dist/config/DBConnect.js";
-
-// Ensure database connection for serverless environment
-let isConnected = false;
-
-const ensureDBConnection = async () => {
-  if (!isConnected) {
-    await DBConnect();
-    isConnected = true;
-  }
-};
-
-// Vercel serverless function handler
-export default async function handler(req, res) {
-  await ensureDBConnection();
-  app(req, res);
-}
+// Minimal Vercel serverless wrapper
+// Re-exports the handler from the compiled dist directory
+export { default } from '../dist/index.js';
