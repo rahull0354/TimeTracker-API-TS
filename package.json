@@ -5,8 +5,8 @@
   "main": "index.js",
   "scripts": {
     "dev": "tsx --watch --env-file .env src/index.ts",
-    "start": "node api/index.js",
-    "build": "tsc && npx tsc-alias && shx mkdir -p api && shx cp -r dist/* api/",
+    "start": "node dist/index.js",
+    "build": "tsc && npx tsc-alias",
     "type-check": "tsc --noEmit",
     "lint": "eslint .",
     "lint:fix": "eslint --fix .",
