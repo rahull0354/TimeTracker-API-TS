@@ -29,3 +29,5 @@ exports/
 
 # Windows-specific junk files
 nul
+
+claude/
