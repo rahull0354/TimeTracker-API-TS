@@ -1,3 +1,4 @@
+import type { Request, Response } from "express";
 import DBConnect from "#config/DBConnect.js";
 import app from "#config/app.js";
 
@@ -22,5 +23,9 @@ if (process.env.NODE_ENV !== "production") {
 }
 
 // Export for Vercel serverless deployment
-// Vercel will automatically detect and use the Express app
-export default app;
+// This function signature is what Vercel looks for
+export default function handler(req: Request, res: Response): void {
+  // The Express app is already set up with DB connection middleware
+  // Just pass the request to the app
+  app(req, res);
+}
