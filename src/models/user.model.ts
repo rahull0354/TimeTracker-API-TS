@@ -4,7 +4,7 @@ interface IUser extends Document {
   username: string;
   email: string;
   password: string;
-  fullName?: string;
+  fullname?: string;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -28,7 +28,7 @@ const userSchema = new mongoose.Schema<IUser>(
       type: String,
       required: true,
     },
-    fullName: {
+    fullname: {
       type: String,
       trim: true,
     },

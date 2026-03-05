@@ -6,6 +6,7 @@ interface IProject extends Document {
   clientName: string;
   hourlyRate: number;
   status: string;
+  projectType: string;
   userId: mongoose.Schema.Types.ObjectId;
 }
 
@@ -34,6 +35,12 @@ const projectSchema = new mongoose.Schema<IProject>(
       type: String,
       enum: ["active", "completed", "archived", "hold"],
       default: "active",
+    },
+    projectType: {
+      type: String,
+      enum: ['api_development', 'web_app', 'mobile_app', 'consulting', 'website_redesign'],
+      required: true,
+      trim: true
     },
     userId: {
       type: mongoose.Schema.Types.ObjectId,

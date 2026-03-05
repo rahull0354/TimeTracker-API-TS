@@ -11,9 +11,9 @@ import { authMiddleware } from "#middlewares/auth.middleware.js";
 const router = express.Router();
 
 router.post("/register", registerUser);
-router.get("/login", loginUser);
+router.post("/login", loginUser);
 router.get("/profile", authMiddleware, getProfileDetails);
 router.delete("/delete", authMiddleware, deleteUser);
-router.put("/update", authMiddleware, updateUser);
+router.patch("/update", authMiddleware, updateUser);
 
 export default router;

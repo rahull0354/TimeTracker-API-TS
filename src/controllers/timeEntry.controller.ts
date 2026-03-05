@@ -1,5 +1,6 @@
 import Project from "#models/project.model.js";
 import TimeEntry from "#models/timeEntry.model.js";
+import User from "#models/user.model.js";
 import { Request, Response } from "express";
 
 export const startTimeEntry = async (req: Request, res: Response) => {
@@ -7,6 +8,7 @@ export const startTimeEntry = async (req: Request, res: Response) => {
     const userId = (req as any).user.id;
     const { projectId } = req.params;
     const { description } = req.body;
+    const INACTIVE_STATUSES = ["hold", "archived", "completed"];
 
     // input validation
     if (!description) {
@@ -40,6 +42,14 @@ export const startTimeEntry = async (req: Request, res: Response) => {
       if (timeEntry.status === "running" || timeEntry.status === "break") {
         res.status(400).json({
           message: `Timer is already in ${timeEntry.status} state`,
+          success: false,
+        });
+        return;
+      }
+
+      if (INACTIVE_STATUSES.includes(projectCheck.status)) {
+        res.status(400).json({
+          message: `Project is in ${projectCheck.status} state. Cant start a time entry`,
           success: false,
         });
         return;
@@ -327,5 +337,135 @@ export const completeTimeEntry = async (req: Request, res: Response) => {
       success: false,
     });
     return;
+  }
+};
+
+export const getTimeEntriesForProject = async (req: Request, res: Response) => {
+  try {
+    const userId = (req as any).user.id;
+    const { projectId } = req.params;
+
+    const project = await Project.findOne({
+      _id: projectId,
+      userId,
+    });
+
+    if (!project) {
+      res.status(404).json({
+        message: "Project not found!",
+        success: false,
+      });
+      return;
+    }
+
+    const timeEntries = await TimeEntry.find({
+      projectId: projectId as any,
+      userId,
+    })
+      .populate("projectId", "projectName")
+      .sort({ createdAt: -1 });
+
+    if (!timeEntries || timeEntries.length === 0) {
+      res.status(404).json({
+        message: "No time entries found for this project",
+        success: false,
+      });
+      return;
+    }
+
+    res.status(200).json({
+      message: `Found ${timeEntries.length} time entries for ${project.projectName}`,
+      success: true,
+      timeEntries,
+      count: timeEntries.length,
+    });
+    return;
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({
+      message: "Error fetching time entries for the project",
+      success: false,
+    });
+    return;
+  }
+};
+
+export const getMyTimeEntries = async (req: Request, res: Response) => {
+  try {
+    const userId = (req as any).user.id;
+
+    const page = parseInt(req.query.page as string) || 1;
+    const limit = parseInt(req.query.limit as string) || 10;
+    const skip = (page - 1) * limit;
+    const sortBy = (req.query.sortBy as string) || "createdAt";
+    const order = (req.query.order as string) || "desc";
+    const status = req.query.status as string;
+
+    if (!userId) {
+      res.status(404).json({
+        message: "User Not found",
+        success: false,
+      });
+      return;
+    }
+
+    const user = await User.findById(userId);
+    if (!user) {
+      res.status(404).json({
+        message: "User not found",
+        success: false,
+      });
+      return;
+    }
+
+    // filter object
+    const filter: any = {
+      userId: userId,
+    };
+
+    if (status) {
+      filter.status = status;
+    }
+
+    // create sort object
+    const sortObj: any = {};
+    sortObj[sortBy] = order === "asc" ? 1 : -1;
+
+    const timeEntries = 
+      await TimeEntry.find(filter)
+      .populate("projectId", "projectName")
+      .sort(sortObj)
+      .skip(skip)
+      .limit(limit);
+
+      const totalCount = await TimeEntry.countDocuments(filter)
+
+      if(!timeEntries || timeEntries.length === 0) {
+        res.status(404).json({
+          message: "No time entries found",
+          success: false
+        })
+        return
+      }
+
+      res.status(200).json({
+        message: `Found ${timeEntries.length} time entries`,
+        success: true,
+        timeEntries: timeEntries,
+        totalCount,
+        pagination: {
+          page,
+          limit,
+          totalPages: Math.ceil(totalCount / limit)
+        }
+      })
+      return
+  } catch (error) {
+    console.error(error);
+      res.status(500).json({
+        message: "Error fetching time entries",
+        success: false
+      })
+      return;
   }
 };
