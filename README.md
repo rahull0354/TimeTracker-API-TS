@@ -105,6 +105,46 @@ npm run build
 npm start
 ```
 
+## 🌐 Vercel Deployment
+
+This project is configured for deployment on Vercel.
+
+### **Deploy Steps:**
+
+1. **Push your code to GitHub**
+   ```bash
+   git add .
+   git commit -m "Ready for Vercel deployment"
+   git push origin main
+   ```
+
+2. **Import Project on Vercel**
+   - Go to [vercel.com](https://vercel.com)
+   - Click "Add New Project"
+   - Import your GitHub repository
+
+3. **Configure Environment Variables**
+   Add the following environment variables in Vercel project settings:
+   ```
+   MONGODB_URI=mongodb+srv://<username>:<password>@cluster0.xxxxx.mongodb.net/TimeTracker?retryWrites=true&w=majority
+   ACCESS_TOKEN_SECRET=your-secret-key-here
+   ```
+   - Note: `PORT` is not needed for Vercel deployment
+
+4. **Deploy**
+   - Click "Deploy"
+   - Vercel will automatically build and deploy your API
+
+### **Vercel Configuration:**
+- Build Command: `npm run build`
+- Output Directory: `dist`
+- Entry Point: `api/index.js`
+
+### **Important Notes:**
+- The project uses serverless functions on Vercel
+- MongoDB connection is cached across function invocations
+- Make sure your MongoDB Atlas whitelist allows Vercel's IPs (or allow all IPs for testing)
+
 ## 📁 Project Structure
 
 ```
