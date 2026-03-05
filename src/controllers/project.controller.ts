@@ -3,10 +3,10 @@ import { Request, Response } from "express";
 
 export const createProject = async (req: Request, res: Response) => {
   try {
-    const { projectName, description, clientName, hourlyRate } = req.body;
+    const { projectType, projectName, description, clientName, hourlyRate } = req.body;
     const userId = (req as any).user.id;
 
-    if (!projectName || !description || !clientName || !hourlyRate) {
+    if (!projectType || !projectName || !description || !clientName || !hourlyRate) {
       res.status(400).json({
         message: "Please fill in all the fields",
         success: false,
@@ -15,6 +15,7 @@ export const createProject = async (req: Request, res: Response) => {
     }
 
     const newProject = new Project({
+      projectType,
       projectName,
       description,
       clientName,
@@ -75,7 +76,7 @@ export const updateProjectDetails = async (req: Request, res: Response) => {
   try {
     const userId = (req as any).user.id;
     const { projectId } = req.params;
-    const { projectName, description, clientName, hourlyRate } = req.body;
+    const { projectName, description, clientName, hourlyRate, projectType } = req.body;
 
     const project = await Project.findOne({ _id: projectId, userId });
     if (!project) {
@@ -88,7 +89,7 @@ export const updateProjectDetails = async (req: Request, res: Response) => {
 
     const updatedProject = await Project.findByIdAndUpdate(
       projectId,
-      { projectName, description, clientName, hourlyRate },
+      { projectName, description, clientName, hourlyRate, projectType },
       { new: true },
     );
 

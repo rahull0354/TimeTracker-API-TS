@@ -7,7 +7,7 @@ export const registerUser = async (req: Request, res: Response) => {
   try {
     const { username, email, password, fullname } = req.body;
 
-    if (!username || !email || !password) {
+    if (!username || !email || !password || !fullname) {
       res.status(400).json({
         message: "Please fill in all the fields",
         success: false,
@@ -24,6 +24,15 @@ export const registerUser = async (req: Request, res: Response) => {
       return;
     }
 
+    const usernameExists = await User.findOne({ username });
+    if (usernameExists) {
+      res.status(400).json({
+        message: "User with this username exists try using another !",
+        success: false,
+      });
+      return;
+    }
+    
     // password hashing
     const hashPassword = await bcrypt.hash(password, 10);
 
@@ -31,7 +40,7 @@ export const registerUser = async (req: Request, res: Response) => {
       username,
       email,
       password: hashPassword,
-      fullname: fullname || "",
+      fullname: fullname,
     });
     await user.save();
 
@@ -110,7 +119,7 @@ export const loginUser = async (req: Request, res: Response) => {
 
 export const deleteUser = async (req: Request, res: Response) => {
   try {
-    const { id } = (req as any).user.id;
+    const id = (req as any).user.id;
 
     const checkUser = await User.findByIdAndDelete(id);
     if (!checkUser) {
@@ -138,7 +147,7 @@ export const deleteUser = async (req: Request, res: Response) => {
 export const updateUser = async (req: Request, res: Response) => {
   try {
     const { username, email, password, fullname } = req.body;
-    const { id } = (req as any).user.id;
+    const id = (req as any).user.id;
 
     const user = await User.findById(id);
     if (!user) {
@@ -204,6 +213,7 @@ export const getProfileDetails = async (req: Request, res: Response) => {
         id: userDetails._id,
         username: userDetails.username,
         email: userDetails.email,
+        fullname: userDetails.fullname
       },
       success: true,
     });
