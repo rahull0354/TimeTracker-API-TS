@@ -8,10 +8,9 @@ import timeEntryRoutes from "#routes/timeEntry.route.js";
 import exportRoutes from "#routes/export.route.js";
 
 const app = express();
-const port = process.env.PORT ?? "9000";
 
 app.use(express.json());
-app.use(cors({origin: "*"}))
+app.use(cors({ origin: "*" }));
 app.use(express.urlencoded({ extended: true }));
 
 app.use("/user", userRoutes);
@@ -19,7 +18,7 @@ app.use("/project", projectRoutes);
 app.use("/timeEntry", timeEntryRoutes);
 app.use("/export", exportRoutes);
 
-app.listen(port, () => {
-  DBConnect();
-  console.log(`Server started on http://localhost:${port}`);
-});
+// connect DB once when serverless function initializes
+DBConnect();
+
+export default app;
