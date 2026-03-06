@@ -469,3 +469,50 @@ export const getMyTimeEntries = async (req: Request, res: Response) => {
       return;
   }
 };
+
+export const deleteTimeEntry = async (req: Request, res: Response) => {
+  try {
+    const userId = (req as any).user.id
+    const {timeEntryId} = req.params
+
+    const timeEntry = await TimeEntry.findOne({
+      _id: timeEntryId,
+      userId
+    })
+
+    if(!timeEntry) {
+      res.status(404).json({
+        message: "No time entries found for this project",
+        success: false
+      })
+      return
+    }
+
+    // can only delete entry if the entry is completed
+    if(timeEntry.status === 'running' || timeEntry.status === 'stopped' || timeEntry.status === 'break') {
+      res.status(400).json({
+        message: "Can't delete an active time entry",
+        success: false
+      })
+      return
+    }
+
+    await TimeEntry.deleteOne({
+      _id: timeEntryId,
+      userId
+    })
+
+    res.status(200).json({
+      message: "Time entry deleted successfully",
+      success: true
+    })
+    return
+  } catch (error) {
+    console.error(error)
+    res.status(500).json({
+      message: "Error deleting time entry",
+      success: false
+    })
+    return
+  }
+}

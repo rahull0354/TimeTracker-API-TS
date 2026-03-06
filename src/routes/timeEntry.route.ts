@@ -1,6 +1,7 @@
 import {
   applyBreakToTimer,
   completeTimeEntry,
+  deleteTimeEntry,
   getMyTimeEntries,
   getTimeEntriesForProject,
   resumeTimer,
@@ -17,9 +18,10 @@ router.post("/stopTimeEntry/:timeEntryId", authMiddleware, stopTimeEntry);
 router.post("/break/:timeEntryId", authMiddleware, applyBreakToTimer);
 router.post("/resume/:timeEntryId", authMiddleware, resumeTimer);
 router.post("/complete/:timeEntryId", authMiddleware, completeTimeEntry);
+router.delete("/delete/:timeEntryId", authMiddleware, deleteTimeEntry);
 
 // fetch time entries of a particular project
-router.get("/myEntries", authMiddleware, getMyTimeEntries)
+router.get("/myEntries", authMiddleware, getMyTimeEntries);
 router.get("/project/:projectId", authMiddleware, getTimeEntriesForProject);
 
 export default router;
