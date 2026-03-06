@@ -18,12 +18,14 @@ app.use("/project", projectRoutes);
 app.use("/timeEntry", timeEntryRoutes);
 app.use("/export", exportRoutes);
 
-const PORT = process.env.PORT
+const PORT = process.env.PORT;
+
+// only for local testing
+// app.listen(PORT, () => {
+//     console.log(`server started on http://localhost:${PORT}`);
+// })
 
 // connect DB once when serverless function initializes
-app.listen(PORT, () => {
-    DBConnect();
-    console.log(`server started on http://localhost:${PORT}`);
-})
+DBConnect();
 
 export default app;
